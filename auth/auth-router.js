@@ -1,39 +1,32 @@
+const router = require("express").Router();
+const Users = require("../users/users-model.js");
 const bcrypt = require("bcryptjs");
 
-const router = require("express").Router();
-
-const Users = require("../users/users-model.js");
-
 router.post("/register", (req, res) => {
-  let userInformation = req.body;
-
-  bcrypt.hash(userInformation.password, 12, (err, hashedPasswod) => {
-    userInformation.password = hashedPasswod;
-
-    Users.add(userInformation)
-      .then(saved => {
-        res.status(201).json(saved);
-      })
-      .catch(error => {
-        res.status(500).json(error);
-      });
-  });
+  const { username, password } = req.body;
+  Users.insert({ username, password: bcrypt.hashSync(password, 8) })
+    .then(id => {
+      res.status(201).json({ message: "User registered", id });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: "Error registering user" });
+    });
 });
 
 router.post("/login", (req, res) => {
-  let { username, password } = req.body;
-
-  Users.findBy({ username })
-    .first()
+  const { username, password } = req.body;
+  Users.findByUsername(username)
     .then(user => {
-      if (user) {
-        res.status(200).json({ message: `Welcome ${user.username}!` });
+      if (user && bcrypt.compareSync(password, user.password)) {
+        res.status(200).json({ message: "Yay! You logged in!!!!!!!" });
       } else {
-        res.status(401).json({ message: "Invalid Credentials" });
+        res.status(401).json({ message: "Invalid password" });
       }
     })
-    .catch(error => {
-      res.status(500).json(error);
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: "Error logging in user" });
     });
 });
 

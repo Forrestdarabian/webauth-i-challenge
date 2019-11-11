@@ -1,4 +1,4 @@
-const db = require("../data/db.js");
+const db = require("../database/db.js");
 
 function insert(user) {
   return db("users")
