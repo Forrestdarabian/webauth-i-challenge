@@ -5,7 +5,7 @@ module.exports = {
     client: "sqlite3",
     useNullAsDefault: true,
     connection: {
-      filename: "./data/dev.db3"
+      filename: "./database/auth.db3"
     },
     pool: {
       afterCreate: (conn, done) => {

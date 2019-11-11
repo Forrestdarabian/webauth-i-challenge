@@ -1,6 +1,4 @@
-const express = require("express");
-const server = express();
-server.use(express.json());
+const server = require("./api/server.js");
 
-const port = 4500;
-server.listen(port, () => console.log("Server Running! :D"));
+const PORT = process.env.PORT || 4500;
+server.listen(PORT, () => console.log(`\n** Running on port: ${PORT} **\n`));
