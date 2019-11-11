@@ -1,6 +1,26 @@
-function findById(id) {
+const db = require("../data/db.js");
+
+function insert(user) {
   return db("users")
-    .select("id", "username")
-    .where({ id })
-    .first();
+    .insert(user, "id")
+    .then(([id]) => id);
 }
+
+function findBy(where) {
+  return db("users").where(where);
+}
+
+function findByUsername(username) {
+  return findBy({ username }).first();
+}
+
+function find() {
+  return db("users");
+}
+
+module.exports = {
+  insert,
+  findBy,
+  findByUsername,
+  find
+};
