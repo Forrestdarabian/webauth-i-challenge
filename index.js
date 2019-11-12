@@ -5,18 +5,16 @@ const session = require("express-session");
 const KnexSessionStorage = require("connect-session-knex")(session);
 const knexConnection = require("./database/db");
 
-const server = express();
-
 const sessionConfiguration = {
   name: "Forrest's Session",
-  secret: process.env.COOKIE_SECRET || "Lets make sure this is private",
+  secret: process.env.SESSION_SECRET || "Lets make sure this is private",
   cookie: {
     maxAge: 1000 * 60 * 60,
-    secure: process.env.NODE_ENV === "development" ? false : true,
+    secure: process.env.NODE_ENV === "development" ? true : false,
     httpOnly: true
   },
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   store: new KnexSessionStorage({
     knex: knexConnection,
     clearInterval: 1000 * 60 * 10,
@@ -26,6 +24,7 @@ const sessionConfiguration = {
   })
 };
 
+const server = express();
 server.use(cors());
 server.use(express.json());
 server.use(helmet());

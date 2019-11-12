@@ -4,8 +4,8 @@ const bcrypt = require("bcryptjs");
 
 router.post("/register", (req, res) => {
   const { username, password } = req.body;
-  const hash = bcrypt.hashSync(user.password, 10);
-  user.password = hash;
+  // const hash = bcrypt.hashSync(user.password, 10);
+  // user.password = hash;
   Users.insert({ username, password: bcrypt.hashSync(password, 8) })
     .then(id => {
       res.status(201).json({ message: "User registered", id });
@@ -21,6 +21,7 @@ router.post("/login", (req, res) => {
   Users.findByUsername(username)
     .then(user => {
       if (user && bcrypt.compareSync(password, user.password)) {
+        req.session.user = user;
         res.status(200).json({ message: "Yay! You logged in!!!!!!!" });
       } else {
         res.status(401).json({ message: "Invalid password" });
